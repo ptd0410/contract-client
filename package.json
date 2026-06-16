@@ -1,5 +1,5 @@
 {
-  "name": "@mtn/contract-client",
+  "name": "@yudpt/contract-client",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -12,7 +12,8 @@
     "dev": "tsup --watch",
     "format": "prettier . --write",
     "check-format": "prettier . --check",
-    "deploy": "pnpm build && git add . && git commit -m \"release\" || true && npm version patch --no-git-tag-version && npm publish --access public"
+    "release": "pnpm build && npm version patch --no-git-tag-version && npm publish --access public",
+    "deploy": "pnpm release"
   },
   "devDependencies": {
     "@types/node": "^25.9.3",
@@ -23,5 +24,5 @@
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   },
-  "version": "0.0.2"
+  "version": "0.0.4"
 }
