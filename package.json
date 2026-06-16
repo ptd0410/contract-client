@@ -1,0 +1,27 @@
+{
+  "name": "@mtn/contract-client",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "lint-staged": {
+    "*.{ts,js,json,md}": "prettier --write"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "format": "prettier . --write",
+    "check-format": "prettier . --check",
+    "deploy": "pnpm build && git add . && git commit -m \"release\" || true && npm version patch --no-git-tag-version && npm publish --access public"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "globby": "^16.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "prettier": "^3.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "version": "0.0.2"
+}
