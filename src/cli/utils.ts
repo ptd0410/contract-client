@@ -33,7 +33,9 @@ export function createEventsName(name: string) {
 }
 
 export function normalizePath(input: string) {
-  return path.basename(input, ".abi.json").split(/[-.]/g).join("");
+  return path
+    .basename(input, ".abi.json")
+    .replace(/[-.]+([a-zA-Z0-9])/g, (_, char) => char.toUpperCase());
 }
 
 export async function writePrettyFile(fileName: string, content: string, outDir: string) {
@@ -49,11 +51,11 @@ export async function writePrettyFile(fileName: string, content: string, outDir:
   fs.writeFileSync(outFile, formatted, "utf-8");
 }
 
-export const contractsTemplate = ` type HandlerDefinition<Input = unknown, Output = unknown> = [Input, Output];
+export const contractsTemplate = ` export type HandlerDefinition<Input = unknown, Output = unknown> = [Input, Output];
 
- type RegistrySchema = Record<string, Record<string, HandlerDefinition<unknown, unknown>>>;
+ export type RegistrySchema = Record<string, Record<string, HandlerDefinition<unknown, unknown>>>;
 
- type RegistryHandlers<TSchema extends RegistrySchema, TOptions = unknown> = {
+ export type RegistryHandlers<TSchema extends RegistrySchema, TOptions = unknown> = {
   [TGroup in keyof TSchema]: {
     [TKey in keyof TSchema[TGroup]]: (
       input: TSchema[TGroup][TKey][0],
@@ -61,9 +63,10 @@ export const contractsTemplate = ` type HandlerDefinition<Input = unknown, Outpu
     ) => Promise<TSchema[TGroup][TKey][1]>;
   };
 };
-type ContractOptions = {
+export type ContractOptions = {
     from?: string
     to?: string
     gas?: string | number
+    amount?: string
   }
 `;

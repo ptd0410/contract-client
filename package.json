@@ -1,5 +1,5 @@
 {
-  "name": "@yudpt/contract-client",
+  "name": "@mtnts/contract-client",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -7,22 +7,37 @@
   "lint-staged": {
     "*.{ts,js,json,md}": "prettier --write"
   },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "bin": {
+    "mtn": "./dist/cli.cjs"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "format": "prettier . --write",
     "check-format": "prettier . --check",
-    "release": "pnpm build && npm version patch --no-git-tag-version && npm publish --access public",
-    "deploy": "pnpm release"
+    "release": "pnpm build && npm version patch --no-git-tag-version && npm publish --access public"
   },
   "devDependencies": {
     "@types/node": "^25.9.3",
-    "globby": "^16.2.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
-    "prettier": "^3.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   },
-  "version": "0.0.4"
+  "dependencies": {
+    "@metanodejs/system-core": "^1.0.8",
+    "globby": "^16.2.0",
+    "prettier": "^3.0.0"
+  },
+  "version": "0.0.14"
 }

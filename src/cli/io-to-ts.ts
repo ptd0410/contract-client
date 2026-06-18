@@ -39,10 +39,10 @@ function getOrCreateStructType(item: any, ioType: string): string {
   if (!structs.has(structName)) {
     const body = buildTsObjectType(item.components ?? [], ioType);
 
-    structs.set(structName, `type ${structName} = ${body}`);
+    structs.set(structName, `export type ${structName} = ${body}`);
   }
 
-  return structName;
+  return `Structs.${structName}`;
 }
 
 function abiTypeToTsType(item: any, ioType: string): string {
