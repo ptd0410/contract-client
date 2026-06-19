@@ -1,6 +1,8 @@
 import { globby } from "globby";
 import fs from "node:fs";
 import path from "node:path";
+import { AbiItem } from "src/types";
+import { defineInstance } from "./define-instance";
 import { abiToTs, getStructString } from "./io-to-ts";
 import {
   ask,
@@ -10,7 +12,6 @@ import {
   normalizePath,
   writePrettyFile,
 } from "./utils";
-import { AbiItem } from "src/types";
 
 type Abis = [string, AbiItem[]][];
 
@@ -97,66 +98,6 @@ function defineAbisIndex(outDir: string, paths: string[]) {
 
   const reExport = `export const abis = {${paths.map((p) => normalizePath(p)).join(",")}}`;
   writePrettyFile(`index.ts`, content + "\n" + reExport, outDir);
-}
-
-// khai bao client
-function defineInstance(outDir: string) {
-  const content = `import { contractClient } from "@mtnts/contract-client";
-import { abis } from "./abis";
-import type { ContractMethods, ContractEvents } from "./contract-types";
-
-export const methods = contractClient.methods as ContractMethods;
-
-export function registerAbi(){
-return contractClient.registerAbiJson(abis);
-}
-
-export function onEvent<K extends keyof ContractEvents>(
-  name: K,
-  cb: (e: ContractEvents[K]) => void,
-) {
-  return contractClient.onEvent(name, cb);
-}
-
-export function offEvent<K extends keyof ContractEvents>(
-  name: K,
-  cb: (e: ContractEvents[K]) => void,
-) {
-  return contractClient.offEvent(name, cb);
-}
-
-export function waitEvent<K extends keyof ContractEvents>(
-  name: K,
-  options: {
-    filter?: (payload: ContractEvents[K]) => boolean
-    timeout?: number
-  } = {}
-) {
-  return new Promise<ContractEvents[K]>((resolve, reject) => {
-    const { filter, timeout = 5000 } = options
-
-    const cb = (e: ContractEvents[K]) => {
-      if (filter && !filter(e)) return
-
-      cleanup()
-      resolve(e)
-    }
-
-    const cleanup = () => {
-      clearTimeout(timeoutId)
-      offEvent(name, cb)
-    }
-
-    const timeoutId = setTimeout(() => {
-      cleanup()
-      reject(new Error(\`Wait event \${name} timeout\`))
-    }, timeout)
-
-    onEvent(name, cb)
-  })
-}
-`;
-  writePrettyFile(`contract.ts`, content, outDir);
 }
 
 export async function main() {

@@ -39,14 +39,9 @@ export class ContractEventClient {
   }
 
   private async handleEventData(e: EventResponse) {
-    console.log("handleEventData 1", e);
     await this.ready;
-    console.log("handleEventData 2", e);
-
     const { topics, data } = e;
-    const [topic0] = topics;
-
-    const eventItem = this.eventsByTopic0.get(topic0);
+    const eventItem = this.eventsByTopic0.get(topics[0]);
 
     if (!eventItem) return console.error("[handleEventData] can't handle", e);
     const indexed = eventItem.indexed.map((item, idx) => {
@@ -59,7 +54,6 @@ export class ContractEventClient {
         item.type === "address" ? rs.slice(-40) : stripHexPrefix(rs),
       ];
     });
-    console.log("indexed", indexed);
     const nonIndexed = eventItem.nonIndexed.length
       ? await sendCommand("decodeAbi", {
           rawInput: data,
@@ -69,7 +63,6 @@ export class ContractEventClient {
       : {};
 
     const rs = { ...nonIndexed, ...Object.fromEntries(indexed) };
-    console.log("handleEventData 2", e);
 
     this.emit(eventItem.name, rs);
   }

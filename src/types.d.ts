@@ -30,8 +30,8 @@ export type BaseRequest = {
 export type RequestPayload = BaseRequest & {
   feeType: string;
   data?: any;
-  amount: string;
-  gas: number | string;
+  amount?: string;
+  gas?: number | string;
 };
 
 export type RequestOptions = {

@@ -1,3 +1,5 @@
 import { ContractClient } from "./contract-client";
+import { MtnContractClient } from "./mtn";
 
-export const contractClient = new ContractClient();
+export { ContractClient };
+export const contractClient = new MtnContractClient();

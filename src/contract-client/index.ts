@@ -1,4 +1,3 @@
-import { ContractEventClient, executeSmartContract } from "src/mtn";
 import {
   AbiItem,
   RegisterContractInput,
@@ -9,26 +8,17 @@ import {
 
 export class ContractClient {
   constructor() {}
+
   readonly methods: Record<string, Record<string, Function>> = {};
   private froms: Record<string, string> = {};
   private tos: Record<string, string> = {};
-  private eventClient = new ContractEventClient();
-
-  onEvent = this.eventClient.onEvent;
-  offEvent = this.eventClient.offEvent;
-  onContract = this.eventClient.onContract;
-  ready = this.eventClient.ready;
-
-  async init() {
-    this.eventClient.init();
-    this.request = executeSmartContract;
-    await this.eventClient.ready;
-  }
 
   //ịnjection
   request: RequestFunction = () => {
     throw new Error("request not set in contract client");
   };
+
+  registerEventItems?: (item: AbiItem[]) => void;
 
   // handle abi
   async registerAbiJson(input: RegisterContractInput) {
@@ -46,7 +36,7 @@ export class ContractClient {
       abiArray.forEach((item) => item.type === "event" && eventItems.push(item));
     });
 
-    this.eventClient.register(eventItems);
+    this.registerEventItems?.(eventItems);
   }
 
   setFrom(input: string | Record<string, string>) {
@@ -83,8 +73,6 @@ export class ContractClient {
       const payload: RequestPayload = {
         from: this.froms[abiName],
         to: this.tos[abiName],
-        gas: 300_000,
-        amount: "0",
         ...options,
         abi,
         feeType: this.detectFeeType(abi),

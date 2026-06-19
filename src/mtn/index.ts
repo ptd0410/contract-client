@@ -1,2 +1,1 @@
-export * from "./contract-event-client";
-export * from "./excute-smart-contract";
+export * from "./mtn-contract-client";
